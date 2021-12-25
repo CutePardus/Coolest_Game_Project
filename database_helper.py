@@ -20,3 +20,11 @@ def save_game(save_id, position, hero, health, level, floor, tools):
     con.commit()
 
 
+def delete(save_id):
+    cur = con.cursor()
+    que = "UPDATE saves SET" + '\n'
+    que += "hero_class='', your_tools='', level=0, health=0," \
+           " position='', floor=''"
+    que += "WHERE id = ?"
+    cur.execute(que, (save_id,))
+    con.commit()
