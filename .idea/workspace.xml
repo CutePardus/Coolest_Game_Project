@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d3d6478e-16fa-48a7-8cd6-0bff36d9e1d6" name="Changes" comment="Очистка сейва">
+    <list default="true" id="d3d6478e-16fa-48a7-8cd6-0bff36d9e1d6" name="Changes" comment="Вопрос перед удалением сейва">
       <change afterPath="$PROJECT_DIR$/checking.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/drawer.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/player.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database_helper.py" beforeDir="false" afterPath="$PROJECT_DIR$/database_helper.py" afterDir="false" />
     </list>
@@ -32,7 +34,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../pythonProject2/Physics_searcher1.py" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
-  <component name="RunManager" selected="Python.checking">
+  <component name="RunManager" selected="Python.player">
     <configuration name="Unnamed" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="Coolest_Game_Project" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -96,13 +98,36 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="player" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Coolest_Game_Project" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/player.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.Unnamed" />
       <item itemvalue="Python.database_helper" />
       <item itemvalue="Python.checking" />
+      <item itemvalue="Python.player" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.player" />
         <item itemvalue="Python.checking" />
       </list>
     </recent_temporary>
@@ -130,7 +155,14 @@
       <option name="project" value="LOCAL" />
       <updated>1640448745494</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Вопрос перед удалением сейва">
+      <created>1641403798539</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1641403798539</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -148,6 +180,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Загрузка сейвов и сохраниние" />
     <MESSAGE value="Очистка сейва" />
-    <option name="LAST_COMMIT_MESSAGE" value="Очистка сейва" />
+    <MESSAGE value="Вопрос перед удалением сейва" />
+    <option name="LAST_COMMIT_MESSAGE" value="Вопрос перед удалением сейва" />
   </component>
 </project>

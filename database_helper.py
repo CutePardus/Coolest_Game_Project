@@ -18,10 +18,10 @@ def question(screen, text):
     screen.blit(yes_text, (575, 300))
 
 
-def load_saves():
+def load_save(save_id):
     cur = con.cursor()
-    saves = cur.execute("SELECT * FROM saves").fetchall()
-    return saves
+    save = cur.execute("SELECT * FROM saves WHERE id=?", (int(save_id),)).fetchone()
+    return save
 
 
 def save_game(save_id, position, hero, health, level, floor, tools):
