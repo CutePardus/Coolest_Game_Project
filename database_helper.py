@@ -24,17 +24,17 @@ def load_save(save_id):
     return save
 
 
-def save_game(save_id, position, hero, health, level, floor, tools):
+def save_game(save_id, position='0 0 0', hero='', health=0, level=0, floor=0, tools=''):
     cur = con.cursor()
     que = "UPDATE saves SET" + '\n'
     que += f"hero_class='{hero}', your_tools='{str(tools)}', level={level}, health={health}," \
-           f" position='{' '.join(position)}', floor='{', '.join(floor)}'"
+           f" position='{position}', floor='{floor}'"
     que += "WHERE id = ?"
     cur.execute(que, (save_id,))
     con.commit()
 
 
-def delete(save_id):
+def delete(save_id, screen):
     question(screen, f'Удалить сейв №{save_id}?')
     cur = con.cursor()
     que = "UPDATE saves SET" + '\n'
@@ -43,3 +43,31 @@ def delete(save_id):
     que += "WHERE id = ?"
     cur.execute(que, (save_id,))
     con.commit()
+
+
+def load_enemy(enemy_type):
+    cur = con.cursor()
+    enemy = cur.execute("SELECT * FROM enemies WHERE name=?", (int(enemy_type),)).fetchone()
+    d = {'rarity': enemy[3],
+         'range': enemy[5],
+         'damage': enemy[4],
+         'picture': enemy[2],
+         'hp': enemy[1]}
+    return d
+
+
+def load_tool(tool_name):
+    cur = con.cursor()
+    tool = cur.execute("SELECT * FROM tools WHERE name=?", (tool_name,)).fetchone()
+    d = {'rarity': tool[2],
+         'abilities': tool[5],
+         'pic': tool[4],
+         'desc': tool[3],
+         'type': tool[1],
+         'ability_num': tool[6],
+         'range': tool[7],
+         'is_wearable': tool[8]}
+    return d
+
+
+print(load_tool('Посох жизни'))
