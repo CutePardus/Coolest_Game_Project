@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d3d6478e-16fa-48a7-8cd6-0bff36d9e1d6" name="Changes" comment="Добавление получения врагов и орудий из базы данных">
-      <change afterPath="$PROJECT_DIR$/checking.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/level_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/level_functions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/player.py" beforeDir="false" afterPath="$PROJECT_DIR$/player.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,7 +32,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../pythonProject2/Physics_searcher1.py" />
     <property name="settings.editor.selected.configurable" value="vcs.Git" />
   </component>
-  <component name="RunManager" selected="Python.database_helper">
+  <component name="RunManager" selected="Python.player">
     <configuration name="Unnamed" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="Coolest_Game_Project" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -118,8 +119,8 @@
     </configuration>
     <list>
       <item itemvalue="Python.Unnamed" />
-      <item itemvalue="Python.checking" />
       <item itemvalue="Python.database_helper" />
+      <item itemvalue="Python.checking" />
       <item itemvalue="Python.player" />
     </list>
     <recent_temporary>

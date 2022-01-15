@@ -5,7 +5,7 @@ import pygame
 
 
 def load_image(name, color_key=None):  # функция для получения изображения
-    fullname = os.path.join('data', name)
+    fullname = os.path.join('sprites', name)
     # проверка
     if not os.path.isfile(fullname):
         print(f"Файл не найден")
@@ -21,12 +21,12 @@ def load_image(name, color_key=None):  # функция для получени�
     return image
 
 
-tile_sprites = {
-    'wall': load_image('idkthenameofthis.png'),
-    'empty_tile': load_image('idkthenameofthis2.png')
-}
-# подгрузка пикч к тайлам, сюда можно добавить остальные
-tile_width = tile_height = 10  # размеры тайла
+# tile_sprites = {
+#     'wall': load_image('idkthenameofthis.png'),
+#     'empty_tile': load_image('idkthenameofthis2.png')
+# }
+# # подгрузка пикч к тайлам, сюда можно добавить остальные
+# tile_width = tile_height = 10  # размеры тайла
 
 
 def load_level(filename):  # функция для чтения уровня в виде txt файла

@@ -1,10 +1,14 @@
 import pygame
-from database_helper import load_save, save_game, delete
+from database_helper import load_save, save_game, delete, load_tool
 from drawer import classes, saves
+from level_functions import load_image
+import random
 
 game_started = False
 save_id = 0
 current_pos = [0, 0, 0]
+# all_sprites = pygame.sprite.Group()
+all_loot = ['Простая броня', 'Пузырек яда', 'Зелье исцеления']
 
 
 class Menu:
@@ -94,25 +98,37 @@ class Board:
     def __init__(self, width, height):
         global save_id, current_pos
         self.save_id = save_id
-        self.board = ['0' * width for _ in range(height)]
+        self.board = [['0' for i in range(width)] for _ in range(height)]
         self.current_pos = current_pos
-        self.floor = ';'.join([' '.join((self.board[i]) for i in range(height))])
+#        self.floor = ';'.join([' '.join((self.board[i]) for i in range(height))])
         self.width = width
         self.height = height
         self.left = 100
         self.top = 100
         self.cell_size = 50
+        for i in range(15):
+            m = random.randint(0, self.height - 1)
+            n = random.randint(0, self.width - 1)
+            self.board[m][n] = '1'
 
     def set_view(self, left, top, cell_size):
         self.left = left
         self.top = top
         self.cell_size = cell_size
 
-    def render(self, screen: pygame.Surface):
+    def render(self, screen):
         for row in range(len(self.board)):
             for column in range(len(self.board[row])):
                 x, y = column * self.cell_size + self.left, row * self.cell_size + self.top
                 pygame.draw.rect(screen, 'white', (x, y, self.cell_size, self.cell_size), 1)
+                if self.board[column][row] == '1':
+                    chest_img = load_image('Chest.png')
+                    chest_img = pygame.transform.scale(chest_img, (50, 50))
+                    screen.blit(chest_img, (100 + column * self.cell_size, 100 + row * self.cell_size))
+                elif self.board[column][row] != '0':
+                    img = load_image(str(load_tool(self.board[column][row])['pic']), color_key=-1)
+                    img = pygame.transform.scale(img, (50, 50))
+                    screen.blit(img, (100 + column * self.cell_size, 100 + row * self.cell_size))
         pygame.draw.rect(screen, 'red', (900, 10, 75, 20))
         font = pygame.font.Font(None, 20)
         text = font.render('Выход', True, (255, 254, 254))
@@ -132,7 +148,10 @@ class Board:
                 return None
 
     def on_click(self, cell_coords):
-        pass
+        x, y = cell_coords[0], cell_coords[1]
+        if self.board[x][y] == '1':
+            self.board[x][y] = random.choice(all_loot)
+            print(self.board)
 
     def get_click(self, mouse_pos):
         cell = self.get_cell(mouse_pos)
