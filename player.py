@@ -1,5 +1,5 @@
 import pygame
-from database_helper import load_save, save_game, delete, load_tool, load_hero
+from database_helper import load_save, save_game, delete, load_tool, load_hero, load_enemy
 from drawer import classes, saves
 from level_functions import load_image
 import random
@@ -160,10 +160,14 @@ class Board:
         self.loot2.extend(s)
         pygame.draw.rect(screen, (54, 11, 204), (900, 250, 75, 300))
         for i in range(len(self.loot2)):
-            pygame.draw.rect(screen, (245, 90, 13), (901, 251 + i * 75, 74, 74))
+            pygame.draw.rect(screen, (255, 255, 255), (901, 251 + i * 75, 74, 74))
             img = load_image(str(load_tool(self.loot2[i])['pic']), color_key=-1)
             img = pygame.transform.scale(img, (75, 75))
             screen.blit(img, (900, 250 + i * 75))
+            text = str(self.current_loot.count(self.loot2[i]))
+            font = pygame.font.Font(None, 50)
+            text = font.render(text, True, (0, 0, 0))
+            screen.blit(text, (960, 310 + i * 75))
         pygame.draw.rect(screen, 'red', (900, 10, 75, 20))
         font = pygame.font.Font(None, 20)
         text = font.render('Выход', True, (255, 254, 254))
@@ -196,11 +200,14 @@ class Board:
         if self.target_choosing and self.current_pos[0] - load_tool(self.item)['range'] <= x <= self.current_pos[0] + load_tool(self.item)['range'] and\
                 self.current_pos[1] - load_tool(self.item)['range'] <= y <= self.current_pos[1] + load_tool(self.item)['range']:
             if self.board[x][y] in enemy_list:
-                if load_tool(self.item)['rarity'] != 0:
+                if load_tool(self.item)['rarity'] != 1:
                     self.target_choosing = False
                     self.current_loot.remove(self.item)
             else:
                 print('nigger')
+                if load_tool(self.item)['rarity'] != 1:
+                    self.target_choosing = False
+                    self.current_loot.remove(self.item)
         else:
             print('you can not attack this spot')
 
@@ -213,6 +220,9 @@ class Board:
             self.target_choosing = True
             self.item = self.loot2[item_num]
             print(item_num)
+        if 'heal' in load_tool(self.loot2[item_num])['abilities'].split(', '):
+            if self.health <= int(load_hero(hero)['health']) + load_tool(self.loot2[item_num])['ability_num']:
+                self.health += load_tool(self.loot2[item_num])['ability_num']
 
     def new_level(self):
         self.board = [['0' for i in range(self.width)] for _ in range(self.height)]
@@ -226,6 +236,11 @@ class Board:
     def exit(self):
         global running
         running = False
+
+    def get_attacked(self, enemy_type, enemy_pos):
+        if self.current_pos[0] - load_enemy(enemy_type)['range'] <= enemy_pos[0] <= self.current_pos[0] + load_enemy(enemy_type)['range'] and\
+                self.current_pos[1] - load_enemy(enemy_type)['range'] <= enemy_pos[1] <= self.current_pos[1] + load_enemy(enemy_type)['range']:
+            self.health -= load_enemy(enemy_type)['damage']
 
     def get_button(self, unicod):
         if unicod == 's':
