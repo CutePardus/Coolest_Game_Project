@@ -70,4 +70,10 @@ def load_tool(tool_name):
     return d
 
 
-print(load_tool('Посох жизни'))
+def load_hero(hero_type):
+    cur = con.cursor()
+    hero = cur.execute("SELECT * FROM heroes WHERE name=?", (hero_type,)).fetchone()
+    d = {'health': hero[2],
+         'start_loot': hero[1],
+         'pic': hero[3]}
+    return d

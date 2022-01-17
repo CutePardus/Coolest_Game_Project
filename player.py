@@ -1,15 +1,16 @@
 import pygame
-from database_helper import load_save, save_game, delete, load_tool
+from database_helper import load_save, save_game, delete, load_tool, load_hero
 from drawer import classes, saves
 from level_functions import load_image
 import random
 
 game_started = False
 save_id = 0
+hero = 'Охотница'
 current_pos = [0, 0, 0]
 # all_sprites = pygame.sprite.Group()
-all_loot = ['Простая броня', 'Пузырек яда', 'Зелье исцеления']
-
+all_loot = ['Пузырек яда'] * 20 + ['Зелье исцеления'] * 20
+enemy_list = []
 
 class Menu:
     def __init__(self):
@@ -68,7 +69,7 @@ class Menu:
                     print(load_save(save_id))
 
     def class_buttons(self, mouse_pos):
-        global game_started
+        global game_started, hero
         classes(screen)
         x, y = mouse_pos[0], mouse_pos[1]
         if 300 <= x <= 700:
@@ -81,6 +82,8 @@ class Menu:
             elif 650 <= y <= 750:
                 self.hero_class = 'Дриадна'
         print(self.hero_class)
+        hero = self.hero_class
+        print(hero)
         game_started = True
 
     def get_click(self, mouse_pos):
@@ -96,7 +99,7 @@ class Menu:
 
 class Board:
     def __init__(self, width, height):
-        global save_id, current_pos
+        global save_id, current_pos, hero
         self.save_id = save_id
         self.board = [['0' for i in range(width)] for _ in range(height)]
         self.current_pos = current_pos
@@ -110,6 +113,17 @@ class Board:
             m = random.randint(0, self.height - 1)
             n = random.randint(0, self.width - 1)
             self.board[m][n] = '1'
+        self.board[self.width - 1][self.height - 1] = 'exit'
+        self.current_loot = []
+        self.current_loot.append(load_hero(hero)['start_loot'])
+        self.health = int(load_hero(hero)['health'])
+        self.target_choosing = False
+        self.item = self.current_loot[0]
+        # if hero != 'Охотница':
+        #     self.current_loot = []
+        #     self.current_loot.append(load_hero(hero)['start_loot'])
+        #     print(self.current_loot)
+        print(self.current_loot)
 
     def set_view(self, left, top, cell_size):
         self.left = left
@@ -120,42 +134,121 @@ class Board:
         for row in range(len(self.board)):
             for column in range(len(self.board[row])):
                 x, y = column * self.cell_size + self.left, row * self.cell_size + self.top
-                pygame.draw.rect(screen, 'white', (x, y, self.cell_size, self.cell_size), 1)
+                floor_img = load_image('floor.png')
+                floor_img = pygame.transform.scale(floor_img, (50, 50))
+                screen.blit(floor_img, (x, y))
                 if self.board[column][row] == '1':
                     chest_img = load_image('Chest.png')
                     chest_img = pygame.transform.scale(chest_img, (50, 50))
                     screen.blit(chest_img, (100 + column * self.cell_size, 100 + row * self.cell_size))
-                elif self.board[column][row] != '0':
+                elif self.board[column][row] != '0' and self.board[column][row] != 'exit':
                     img = load_image(str(load_tool(self.board[column][row])['pic']), color_key=-1)
                     img = pygame.transform.scale(img, (50, 50))
                     screen.blit(img, (100 + column * self.cell_size, 100 + row * self.cell_size))
+                elif self.board[column][row] == 'exit':
+                    exit_img = load_image('exit.png')
+                    exit_img = pygame.transform.scale(exit_img, (50, 50))
+                    screen.blit(exit_img, (100 + column * self.cell_size, 100 + row * self.cell_size))
+                elif column == 0 and row == 0:
+                    entrance_img = load_image('entrance.png')
+                    entrance_img = pygame.transform.scale(entrance_img, (50, 50))
+                    screen.blit(entrance_img, (100 + column * self.cell_size, 100 + row * self.cell_size))
+        s = set()
+        for elem in self.current_loot:
+            s.add(elem)
+        self.loot2 = []
+        self.loot2.extend(s)
+        pygame.draw.rect(screen, (54, 11, 204), (900, 250, 75, 300))
+        for i in range(len(self.loot2)):
+            pygame.draw.rect(screen, (245, 90, 13), (901, 251 + i * 75, 74, 74))
+            img = load_image(str(load_tool(self.loot2[i])['pic']), color_key=-1)
+            img = pygame.transform.scale(img, (75, 75))
+            screen.blit(img, (900, 250 + i * 75))
         pygame.draw.rect(screen, 'red', (900, 10, 75, 20))
         font = pygame.font.Font(None, 20)
         text = font.render('Выход', True, (255, 254, 254))
         screen.blit(text, (910, 10))
+        if len(self.current_loot) == 1:
+            self.current_loot = []
+            self.current_loot.append(load_hero(hero)['start_loot'])
+        hero_img = load_image(load_hero(hero)['pic'], color_key=-1)
+        hero_img = pygame.transform.scale(hero_img, (50, 50))
+        screen.blit(hero_img, (100 + self.current_pos[0] * self.cell_size, 100 + self.current_pos[1] * self.cell_size))
 
     def get_cell(self, mouse_pos):
         if 900 <= mouse_pos[0] <= 975 and 10 <= mouse_pos[1] <= 30:
             print('ok')
-            save_game(self.save_id, )
+            # save_game(self.save_id, )
+            return tuple([16, 16])
+        elif 900 <= mouse_pos[0] <= 975 and 250 <= mouse_pos[1] <= 325:
+            self.active_item(len(self.loot2) - 1)
+            return 0, 0
         else:
             x, y = (mouse_pos[0] - self.top) // self.cell_size, (mouse_pos[1] - self.left) // self.cell_size
             if 0 <= x <= self.width and 0 <= y <= self.height:
-                print(tuple([x, y]))
                 return x, y
             else:
                 print('None')
-                return None
+                return tuple([16, 16])
 
     def on_click(self, cell_coords):
         x, y = cell_coords[0], cell_coords[1]
-        if self.board[x][y] == '1':
-            self.board[x][y] = random.choice(all_loot)
-            print(self.board)
+        if self.target_choosing and self.current_pos[0] - load_tool(self.item)['range'] <= x <= self.current_pos[0] + load_tool(self.item)['range'] and\
+                self.current_pos[1] - load_tool(self.item)['range'] <= y <= self.current_pos[1] + load_tool(self.item)['range']:
+            if self.board[x][y] in enemy_list:
+                if load_tool(self.item)['rarity'] != 0:
+                    self.target_choosing = False
+                    self.current_loot.remove(self.item)
+            else:
+                print('nigger')
+        else:
+            print('you can not attack this spot')
 
     def get_click(self, mouse_pos):
         cell = self.get_cell(mouse_pos)
         self.on_click(cell)
+
+    def active_item(self, item_num):
+        if 'atc' in load_tool(self.loot2[item_num])['abilities'].split(', '):
+            self.target_choosing = True
+            self.item = self.loot2[item_num]
+            print(item_num)
+
+    def new_level(self):
+        self.board = [['0' for i in range(self.width)] for _ in range(self.height)]
+        for i in range(15):
+            m = random.randint(0, self.height - 1)
+            n = random.randint(0, self.width - 1)
+            self.board[m][n] = '1'
+        self.board[self.height - 1][self.width - 1] = 'exit'
+        self.current_pos = [0, 0, current_pos[2] + 1]
+
+    def exit(self):
+        global running
+        running = False
+
+    def get_button(self, unicod):
+        if unicod == 's':
+            if self.current_pos[1] != 14:
+                self.current_pos[1] += 1
+        elif unicod == 'w':
+            if self.current_pos[1] != 0:
+                self.current_pos[1] -= 1
+        elif unicod == 'a':
+            if self.current_pos[0] != 0:
+                self.current_pos[0] -= 1
+        elif unicod == 'd':
+            if self.current_pos[0] != 14:
+                self.current_pos[0] += 1
+        elif unicod == ' ':
+            if self.board[current_pos[0]][current_pos[1]] == '1':
+                self.board[current_pos[0]][current_pos[1]] = random.choice(all_loot)
+            elif self.board[current_pos[0]][current_pos[1]] == 'exit':
+                self.new_level()
+            elif self.board[current_pos[0]][current_pos[1]] != '0':
+                self.current_loot.append(self.board[current_pos[0]][current_pos[1]])
+                print(self.current_loot)
+                self.board[current_pos[0]][current_pos[1]] = '0'
 
 
 if __name__ == '__main__':
@@ -175,9 +268,8 @@ if __name__ == '__main__':
                         board.get_click(event.pos)
                     else:
                         menu.get_click(event.pos)
-                # else:
-                #     if not game_started:
-
+            if event.type == pygame.KEYDOWN:
+                board.get_button(event.unicode)
         if game_started:
             screen.fill((0, 0, 0))
             board.render(screen)
