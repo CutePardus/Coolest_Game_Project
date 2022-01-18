@@ -3,15 +3,17 @@ import sqlite3
 from database_helper import load_enemy
 from enemy_generator import enemy_generator
 import random
+from level_functions import load_image
 
 enemy_sprites = pygame.sprite.Group()
 
 con = sqlite3.connect('saves_and_others.db')
 cur = con.cursor()
+screen = pygame.surface.Surface((1000, 1000))
 
 enemy_type = enemy_generator()
-pic_location = cur.execute("SELECT pic_location FROM enemies WHERE name = ?", (enemy_type,)).fetchall()[0][0]
-
+pic_location = load_enemy(enemy_type)['picture']
+enemies = []
 
 def weapon(weapon_name):  # оружие игрока и его данные
     global con, cur
@@ -23,7 +25,7 @@ def weapon(weapon_name):  # оружие игрока и его данные
 class Enemy(pygame.sprite.Sprite):  # класс врага
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load(pic_location)
+        self.image = load_image(pic_location)
         self.rect = self.image.get_rect()
         self.health = load_enemy(enemy_type)['hp']
         self.damage = load_enemy(enemy_type)['damage']
@@ -35,8 +37,20 @@ class Enemy(pygame.sprite.Sprite):  # класс врага
         return enemy_pos
 
     def get_attacked(self, player_pos, weapon_name):  # получение урона от игрока
-        enemy_pos = self.spawn()
+        self.enemy_pos = self.spawn()
         weapon_damage, weapon_range = weapon(weapon_name)
-        if enemy_pos[0] - weapon_range <= player_pos[0] <= enemy_pos[0] + weapon_range and \
-                enemy_pos[1] - weapon_range <= player_pos[1] <= enemy_pos[1] + weapon_range:
+        if self.enemy_pos[0] - weapon_range <= player_pos[0] <= self.enemy_pos[0] + weapon_range and \
+                self.enemy_pos[1] - weapon_range <= player_pos[1] <= self.enemy_pos[1] + weapon_range:
             self.health -= weapon_damage
+        if self.health <= 0:
+            enemies.remove(self)
+
+
+    def attack(self, player_pos):
+        print('ok')
+
+
+for i in range(10):
+    e = Enemy()
+    enemies.append(e)
+

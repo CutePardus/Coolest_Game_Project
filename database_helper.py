@@ -47,7 +47,7 @@ def delete(save_id, screen):
 
 def load_enemy(enemy_type):
     cur = con.cursor()
-    enemy = cur.execute("SELECT * FROM enemies WHERE name=?", (int(enemy_type),)).fetchone()
+    enemy = cur.execute("SELECT * FROM enemies WHERE name=?", (enemy_type,)).fetchone()
     d = {'rarity': enemy[3],
          'range': enemy[5],
          'damage': enemy[4],

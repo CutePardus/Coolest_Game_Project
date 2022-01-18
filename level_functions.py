@@ -8,6 +8,7 @@ def load_image(name, color_key=None):  # функция для получени�
     fullname = os.path.join('sprites', name)
     # проверка
     if not os.path.isfile(fullname):
+        print(fullname)
         print(f"Файл не найден")
         sys.exit()
     image = pygame.image.load(fullname)
