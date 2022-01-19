@@ -73,7 +73,7 @@ class Board:
         self.height = height
         self.left = 100
         self.top = 100
-        self.cell_size = 50
+        self.cell_size = 40
         self.text = ''
         self.tick = 0
         self.text2 = 'Нажмите правой кнопкой мыши на клетку или предмет из инвенторя, чтобы получить описание. Нажатие на пробел для взаимодейсвия с сундуком или предметом на поле'
@@ -113,37 +113,37 @@ class Board:
                 for column in range(len(self.board[row])):
                     x, y = column * self.cell_size + self.left, row * self.cell_size + self.top
                     floor_img = load_image('floor.png')
-                    floor_img = pygame.transform.scale(floor_img, (50, 50))
+                    floor_img = pygame.transform.scale(floor_img, (self.cell_size, self.cell_size))
                     screen.blit(floor_img, (x, y))
                     if self.board[column][row] == '1':
                         chest_img = load_image('Chest.png')
-                        chest_img = pygame.transform.scale(chest_img, (50, 50))
+                        chest_img = pygame.transform.scale(chest_img, (self.cell_size, self.cell_size))
                         screen.blit(chest_img, (100 + column * self.cell_size, 100 + row * self.cell_size))
                     elif self.board[column][row] != '0' and self.board[column][row] != 'exit' and \
                             self.board[column][row].split(', ')[0] not in enemy_types and self.board[column][row].split(', ')[0] != 'boss' and\
                             self.board[column][row].split(', ')[0] != 'ghost':
                         img = load_image(str(load_tool(self.board[column][row])['pic']), color_key=-1)
-                        img = pygame.transform.scale(img, (50, 50))
+                        img = pygame.transform.scale(img, (self.cell_size, self.cell_size))
                         screen.blit(img, (100 + column * self.cell_size, 100 + row * self.cell_size))
                     elif self.board[column][row] == 'exit':
                         exit_img = load_image('exit.png')
-                        exit_img = pygame.transform.scale(exit_img, (50, 50))
+                        exit_img = pygame.transform.scale(exit_img, (self.cell_size, self.cell_size))
                         screen.blit(exit_img, (100 + column * self.cell_size, 100 + row * self.cell_size))
                     elif column == 0 and row == 0:
                         entrance_img = load_image('entrance.png')
-                        entrance_img = pygame.transform.scale(entrance_img, (50, 50))
+                        entrance_img = pygame.transform.scale(entrance_img, (self.cell_size, self.cell_size))
                         screen.blit(entrance_img, (100 + column * self.cell_size, 100 + row * self.cell_size))
                     elif self.board[column][row].split(', ')[0] in enemy_types:
                         enemy = self.board[column][row].split(', ')[0]
                         if self.tick % 2 == 0:
                             enemy_img = load_image(load_enemy(enemy)['picture'], color_key=-1)
-                            enemy_img = pygame.transform.scale(enemy_img, (50, 50))
+                            enemy_img = pygame.transform.scale(enemy_img, (self.cell_size, self.cell_size))
                             screen.blit(enemy_img, (100 + column * self.cell_size, 100 + row * self.cell_size))
                         else:
                             s = load_enemy(enemy)['picture']
                             s = '2.'.join(s.split('.'))
                             enemy_img = load_image(s, color_key=-1)
-                            enemy_img = pygame.transform.scale(enemy_img, (50, 50))
+                            enemy_img = pygame.transform.scale(enemy_img, (self.cell_size, self.cell_size))
                             screen.blit(enemy_img, (100 + column * self.cell_size, 100 + row * self.cell_size))
                         if self.current_pos[0] - load_enemy(enemy)['range'] <= column <= self.current_pos[0] + \
                                 load_enemy(enemy)['range'] and \
@@ -152,16 +152,16 @@ class Board:
                             self.get_attacked(self.board[column][row].split(', ')[0])
                     elif self.board[column][row].split(', ')[0] == 'boss':
                         boss_img = load_image('boss.png', color_key=-1)
-                        boss_img = pygame.transform.scale(boss_img, (50, 50))
+                        boss_img = pygame.transform.scale(boss_img, (self.cell_size, self.cell_size))
                         screen.blit(boss_img, (100 + column * self.cell_size, 100 + row * self.cell_size))
                         self.boss_attack([column, row])
                     elif self.board[column][row].split(', ')[0] == 'ghost':
                         ghost_img = load_image('ghost.png', color_key=-1)
-                        ghost_img = pygame.transform.scale(ghost_img, (50, 50))
+                        ghost_img = pygame.transform.scale(ghost_img, (self.cell_size, self.cell_size))
                         screen.blit(ghost_img, (100 + column * self.cell_size, 100 + row * self.cell_size))
                     elif column == current_pos[0] and row == current_pos[1]:
                         hero_img = load_image(load_hero(hero)['pic'], color_key=-1)
-                        hero_img = pygame.transform.scale(hero_img, (50, 50))
+                        hero_img = pygame.transform.scale(hero_img, (self.cell_size, self.cell_size))
                         screen.blit(hero_img,
                                     (100 + self.current_pos[0] * self.cell_size,
                                      100 + self.current_pos[1] * self.cell_size))
@@ -189,7 +189,7 @@ class Board:
                     self.current_loot = []
                     self.current_loot.append(load_hero(hero)['start_loot'])
                 hero_img = load_image(load_hero(hero)['pic'], color_key=-1)
-                hero_img = pygame.transform.scale(hero_img, (50, 50))
+                hero_img = pygame.transform.scale(hero_img, (self.cell_size, self.cell_size))
                 screen.blit(hero_img, (100 + self.current_pos[0] * self.cell_size, 100 + self.current_pos[1] * self.cell_size))
                 font = pygame.font.Font(None, 25)
                 text = font.render(f'Вы находитесь на этаже {current_pos[2]}', True, 'white')
@@ -229,7 +229,7 @@ class Board:
                 self.current_loot = []
                 self.current_loot.append(load_hero(hero)['start_loot'])
             hero_img = load_image(load_hero(hero)['pic'], color_key=-1)
-            hero_img = pygame.transform.scale(hero_img, (50, 50))
+            hero_img = pygame.transform.scale(hero_img, (self.cell_size, self.cell_size))
             screen.blit(hero_img,
                         (100 + self.current_pos[0] * self.cell_size, 100 + self.current_pos[1] * self.cell_size))
             font = pygame.font.Font(None, 25)
@@ -405,10 +405,10 @@ class Board:
 
 if __name__ == '__main__':
     pygame.init()
-    size = width, height = 1000, 1000
+    size = width, height = 1000, 850
     screen = pygame.display.set_mode(size)
     start_screen = load_image('start_screen.png')
-    start_screen = pygame.transform.scale(start_screen, (1000, 1000))
+    start_screen = pygame.transform.scale(start_screen, (1000, 850))
     screen.blit(start_screen, (0, 0))
     menu = Menu()
     board = Board(15, 15)

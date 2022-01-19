@@ -60,7 +60,7 @@ def question(screen, text):
 def bottom_text(screen, text):
     font = pygame.font.Font(None, 25)
     text = font.render(text, True, 'white')
-    screen.blit(text, (0, 875))
+    screen.blit(text, (0, 800))
 
 
 def up_text(screen, text):
