@@ -75,6 +75,7 @@ class Board:
         self.top = 100
         self.cell_size = 50
         self.text = ''
+        self.tick = 0
         self.text2 = 'Нажмите правой кнопкой мыши на клетку или предмет из инвенторя, чтобы получить описание. Нажатие на пробел для взаимодейсвия с сундуком или предметом на поле'
         self.text3 = 'Ходите при помощи клавиш WSDA, выбирайте предмет, который хотите использовать или клетку, которую хотите атаковать правой кнопкой мыши'
         self.board = [['0' for i in range(width)] for _ in range(height)]
@@ -133,9 +134,18 @@ class Board:
                         screen.blit(entrance_img, (100 + column * self.cell_size, 100 + row * self.cell_size))
                     elif self.board[column][row].split(', ')[0] in enemy_types:
                         enemy = self.board[column][row].split(', ')[0]
-                        enemy_img = load_image(load_enemy(enemy)['picture'], color_key=-1)
-                        enemy_img = pygame.transform.scale(enemy_img, (50, 50))
-                        screen.blit(enemy_img, (100 + column * self.cell_size, 100 + row * self.cell_size))
+                        if self.tick % 2 == 0:
+                            enemy_img = load_image(load_enemy(enemy)['picture'], color_key=-1)
+                            enemy_img = pygame.transform.scale(enemy_img, (50, 50))
+                            screen.blit(enemy_img, (100 + column * self.cell_size, 100 + row * self.cell_size))
+                            self.tick += 1
+                        else:
+                            s = load_enemy(enemy)['picture']
+                            s = '2.'.join(s.split('.'))
+                            enemy_img = load_image(s, color_key=-1)
+                            enemy_img = pygame.transform.scale(enemy_img, (50, 50))
+                            screen.blit(enemy_img, (100 + column * self.cell_size, 100 + row * self.cell_size))
+                            self.tick += 1
                         if self.current_pos[0] - load_enemy(enemy)['range'] <= column <= self.current_pos[0] + \
                                 load_enemy(enemy)['range'] and \
                                 self.current_pos[1] - load_enemy(enemy)['range'] <= row <= self.current_pos[1] + \
