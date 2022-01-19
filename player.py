@@ -3,6 +3,7 @@ from database_helper import load_tool, load_hero, load_enemy
 from drawer import classes, bottom_text, up_text, up_text2
 from level_functions import load_image
 import random
+from enemies import Enemy
 
 game_started = False
 save_id = 1
@@ -10,7 +11,6 @@ hero = 'Охотница'
 current_pos = [0, 0, 0]
 all_loot = ['Пузырек яда'] * 20 + ['Зелье исцеления'] * 20
 enemy_types = ['Серая крыса', 'Черная крыса', 'Летучая мышь']
-
 
 class Menu:
     def __init__(self):
@@ -89,12 +89,14 @@ class Board:
         self.health = int(load_hero(hero)['health'])
         self.item = self.current_loot[0]
         for i in range(10):
-            m = random.randint(3, self.height - 1)
-            n = random.randint(3, self.width - 1)
-            if self.board[m][n] != '1' and self.board[m][n] != 'exit':
-                enemy = random.choice(enemy_types)
-                hp = load_enemy(enemy)['hp']
-                self.board[m][n] = f'{enemy}, {hp}'
+            e = Enemy()
+            e.spawn(self.board, enemy_types)
+            # m = random.randint(3, self.height - 1)
+            # n = random.randint(3, self.width - 1)
+            # if self.board[m][n] != '1' and self.board[m][n] != 'exit':
+            #     enemy = random.choice(enemy_types)
+            #     hp = load_enemy(enemy)['hp']
+            #     self.board[m][n] = f'{enemy}, {hp}'
 
     def set_view(self, left, top, cell_size):
         self.left = left
@@ -323,12 +325,8 @@ class Board:
                 self.board[m][n] = '1'
             self.board[self.height - 1][self.width - 1] = 'exit'
             for i in range(10):
-                m = random.randint(3, self.height - 1)
-                n = random.randint(3, self.width - 1)
-                if self.board[m][n] != '1' and self.board[m][n] != 'exit':
-                    enemy = random.choice(enemy_types)
-                    hp = load_enemy(enemy)['hp']
-                    self.board[m][n] = f'{enemy}, {hp}'
+                e = Enemy()
+                e.spawn(self.board, enemy_types)
         else:
             self.board = [['0' for i in range(self.width)] for _ in range(self.height)]
             self.board[7][7] = f'boss, {self.boss_health}'
@@ -375,7 +373,7 @@ class Board:
                 self.text = 'Покрытый плесенью и грязью пол'
             elif self.board[x][y].split(', ')[0] in enemy_types or self.board[x][y].split(', ')[0] == 'boss' or self.board[x][y].split(', ')[0] == 'ghost':
                 e = self.board[x][y].split(', ')
-                if e in enemy_types:
+                if e[0] in enemy_types:
                     e_start = load_enemy(e[0])['hp']
                 else:
                     e_start = 100
@@ -394,6 +392,9 @@ if __name__ == '__main__':
     pygame.init()
     size = width, height = 1000, 1000
     screen = pygame.display.set_mode(size)
+    start_screen = load_image('start_screen.png')
+    start_screen = pygame.transform.scale(start_screen, (1000, 1000))
+    screen.blit(start_screen, (0, 0))
     menu = Menu()
     board = Board(15, 15)
     running = True

@@ -4,6 +4,7 @@ from database_helper import load_tool, load_hero
 
 
 def classes(screen):
+    screen.fill('black')
     all_classes = ['Воин', 'Охотница', 'Вор', 'Дриадна']
     pygame.draw.rect(screen, 'blue', (250, 125, 500, 750), 0)
     font = pygame.font.Font(None, 50)
