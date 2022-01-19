@@ -106,6 +106,7 @@ class Board:
 
     def render(self, screen):
         if game_started:
+            self.tick += 1
             pygame.draw.rect(screen, 'white', (25, 25, load_hero(hero)['health'] * 5, 20))
             pygame.draw.rect(screen, 'red', (25, 25, self.health * 5, 20))
             for row in range(len(self.board)):
@@ -138,14 +139,12 @@ class Board:
                             enemy_img = load_image(load_enemy(enemy)['picture'], color_key=-1)
                             enemy_img = pygame.transform.scale(enemy_img, (50, 50))
                             screen.blit(enemy_img, (100 + column * self.cell_size, 100 + row * self.cell_size))
-                            self.tick += 1
                         else:
                             s = load_enemy(enemy)['picture']
                             s = '2.'.join(s.split('.'))
                             enemy_img = load_image(s, color_key=-1)
                             enemy_img = pygame.transform.scale(enemy_img, (50, 50))
                             screen.blit(enemy_img, (100 + column * self.cell_size, 100 + row * self.cell_size))
-                            self.tick += 1
                         if self.current_pos[0] - load_enemy(enemy)['range'] <= column <= self.current_pos[0] + \
                                 load_enemy(enemy)['range'] and \
                                 self.current_pos[1] - load_enemy(enemy)['range'] <= row <= self.current_pos[1] + \
@@ -160,6 +159,12 @@ class Board:
                         ghost_img = load_image('ghost.png', color_key=-1)
                         ghost_img = pygame.transform.scale(ghost_img, (50, 50))
                         screen.blit(ghost_img, (100 + column * self.cell_size, 100 + row * self.cell_size))
+                    elif column == current_pos[0] and row == current_pos[1]:
+                        hero_img = load_image(load_hero(hero)['pic'], color_key=-1)
+                        hero_img = pygame.transform.scale(hero_img, (50, 50))
+                        screen.blit(hero_img,
+                                    (100 + self.current_pos[0] * self.cell_size,
+                                     100 + self.current_pos[1] * self.cell_size))
 
                 s = set()
                 for elem in self.current_loot:
